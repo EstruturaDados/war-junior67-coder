@@ -1,4 +1,85 @@
-// ============================================================================
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Definição da struct Territorio
+//----------------------------------------------------------------------------------
+typedef struct {
+    char nome[50];
+    char cor_exercito[20];
+    int tropas;
+} Territorio;
+//----------------------------------------------------------------------------------
+
+// Função para ler os dados de um único território
+void ler_territorio(Territorio *t, int indice) {
+    // Limpa o buffer antes de usar fgets, caso haja '\n' restante
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {} 
+
+    printf("\n--- Cadastro do Territorio %d ---\n", indice + 1);
+    
+    // Leitura do Nome (usando fgets para strings com espaco)
+    printf("Nome do Territorio: ");
+    if (fgets(t->nome, sizeof(t->nome), stdin) == NULL) {
+        // Trata erro de leitura ou EOF
+        return; 
+    }
+    // Remove o '\n' lido pelo fgets, se estiver presente
+    t->nome[strcspn(t->nome, "\n")] = 0; 
+
+    // Leitura da Cor do Exercito
+    printf("Cor do Exercito Dominante: ");
+    if (fgets(t->cor_exercito, sizeof(t->cor_exercito), stdin) == NULL) {
+        return;
+    }
+    t->cor_exercito[strcspn(t->cor_exercito, "\n")] = 0;
+
+    // Leitura do Numero de Tropas
+    printf("Numero de Tropas: ");
+    // Usamos scanf para ler o inteiro e limpamos o buffer imediatamente
+    if (scanf("%d", &t->tropas) != 1) {
+         printf("Erro na leitura do numero de tropas.\n");
+         t->tropas = 0;
+    }
+}
+
+// Funcao para exibir o mapa (lista de todos os territorios)
+void exibir_mapa(Territorio territorios[], int tamanho) {
+    printf("\n============================================\n");
+    printf("           ESTADO ATUAL DO MAPA\n");
+    printf("============================================\n");
+    printf("| %-4s | %-20s | %-15s | %-6s |\n", "ID", "Territorio", "Exercito", "Tropas");
+    printf("|------|----------------------|-----------------|--------|\n");
+    
+    for (int i = 0; i < tamanho; i++) {
+        printf("| %-4d | %-20s | %-15s | %-6d |\n", 
+               i + 1, 
+               territorios[i].nome, 
+               territorios[i].cor_exercito, 
+               territorios[i].tropas);
+    }
+    printf("============================================\n");
+}
+
+int main() {
+    const int NUM_TERRITORIOS = 5;
+    // Vetor estatico de 5 elementos (Territorios)
+    Territorio mapa[NUM_TERRITORIOS]; 
+
+    printf("Bem-vindo ao Desafio WAR Estruturado - Nivel Novato!\n");
+    printf("Por favor, cadastre os %d territorios.\n", NUM_TERRITORIOS);
+
+    // Loop de cadastro
+    for (int i = 0; i < NUM_TERRITORIOS; i++) {
+        ler_territorio(&mapa[i], i);
+    }
+
+    // Exibicao do mapa
+    exibir_mapa(mapa, NUM_TERRITORIOS);
+
+    return 0;
+}// ============================================================================
 //         PROJETO WAR ESTRUTURADO - DESAFIO DE CÓDIGO
 // ============================================================================
 //        
